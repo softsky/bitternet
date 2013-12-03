@@ -48,7 +48,7 @@ class SpockTests extends Specification  {
   // ************************************* 
   def "створюємо акта"(){
   when:
-  Акт акт = Акт.новий(type: 'Акт', типАкту: "прихідний")
+  Акт акт = Акт.новий(типАкту: "прихідний")
 
   базаДаних.saveOrFail(акт)
   
@@ -66,8 +66,7 @@ class SpockTests extends Specification  {
   p.firstName = 'Ludovic'
   базаДаних.saveOrFail(p)
 
-  assert p.firstName == 'Rimero111'
-  
+  assert p.firstName == 'Rimero1'  
 
   Рахунок дебет = Рахунок.новий(50)
   дебет.сума = 100.0f
@@ -85,8 +84,7 @@ class SpockTests extends Specification  {
   println дебет.сума
   println кредит.сума
 
-  базаДаних.saveOrFail(дебет)
-  базаДаних.saveOrFail(кредит)
+  println накладна.сума
 
   then:
   базаДаних.findAll(Рахунок)[0].номер == 50

@@ -1,5 +1,6 @@
 package ua.bitternet.docflow.domain
 
+import ua.bitternet.docflow.domain.Document as Документ
 import grails.persistence.Entity;
 import groovy.transform.EqualsAndHashCode
 
@@ -9,7 +10,7 @@ import groovy.transform.EqualsAndHashCode
  */
 @Entity
 @EqualsAndHashCode(includes="id")
-class Накладна {
+class Накладна extends Документ {
 
   Рахунок рахунокДебет
   Рахунок рахунокКредит
@@ -22,12 +23,7 @@ class Накладна {
     сума nullable: false, empty: false
   }
 
-  def beforeInsert = {
-    println 'beforeInsert called'
-  }
-
   def beforeUpdate = {
-    println 'beforeUpdate called'
     рахунокДебет.сума -= сума
     рахунокКредит.сума += сума
   }
