@@ -11,8 +11,6 @@ import groovy.transform.EqualsAndHashCode
 @Entity
 @EqualsAndHashCode(includes="id")
 class Document {
-
-  String type
   Person author
   List<Row> rows = []
 
@@ -28,7 +26,6 @@ class Document {
 
   static constraints = {
     author nullable:true
-    type blank:false
 
     // REQUIRED to pass validation
     dateCreated nullable:true

@@ -54,7 +54,7 @@ class SpockTests extends Specification  {
   Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
   dataService.saveOrFail(person);
 
-  Document doc = new Document(id:1, author: person, type:"Накладна")
+  Document doc = new Document(id:1, author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
@@ -75,7 +75,7 @@ class SpockTests extends Specification  {
   Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
   dataService.saveOrFail(person);
 
-  Document doc = new Document(id:1, author: person, type:"Накладна")
+  Document doc = new Document(id:1, author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
@@ -101,7 +101,7 @@ class SpockTests extends Specification  {
   Person person = new Person(firstName: "Arsen", lastName: "Gutsal")
   dataService.saveOrFail(person);
 
-  Document doc = new Document(id:1, author: person, type: "Накладна")
+  Document doc = new Document(id:1, author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
