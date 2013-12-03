@@ -1,4 +1,6 @@
 .emacs.*
 .gradle
+build
 .idea
 *.iml
+*.db
