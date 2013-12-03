@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+group = 'ua.bitternet.docflow'
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+  maven { url "http://repo.grails.org/grails/core/" }
+}
+
+
+dependencies {
+  compile(
+    "ua.bitternet.docflow:domain:0.1"
+  )
+}
