@@ -1,4 +1,4 @@
-.emacs.desktop
+.emacs.*
 .gradle
 .idea
 *.iml

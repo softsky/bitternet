@@ -47,6 +47,7 @@ class Person {
   }
 
   def beforeUpdate = {
+    println "beforeUpdate called for Person class"
     if (firstName == "Ludovic") {
       firstName = "Rimero1"
     }

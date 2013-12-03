@@ -32,7 +32,6 @@ dependencies {
            "com.h2database:h2:$h2Version",
            "org.grails:grails-spring:$grailsVersion",
 
-           "ua.bitternet.docflow:domain:0.1",
            "ua.bitternet.docflow:sklad:0.1"
           )
 
