@@ -30,9 +30,7 @@ dependencies {
            "org.grails:grails-gorm:$gormVersion",
            "org.grails:grails-bootstrap:$grailsVersion",
            "com.h2database:h2:$h2Version",
-           "org.grails:grails-spring:$grailsVersion",
-
-           "ua.bitternet.docflow:sklad:0.1"
+           "org.grails:grails-spring:$grailsVersion"
           )
 
   compile("org.springframework.uaa:org.springframework.uaa.client:$springFrameworkUaaVersion") {
