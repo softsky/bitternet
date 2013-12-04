@@ -64,48 +64,52 @@ class GormIntegrationTest {
 
   @Test
   void testPersistence() {                
-    Person person = new Person("firstName": "Rimero", "lastName":"Solutions")
+    dataService.withTransaction {
+      Person person = new Person("firstName": "Rimero", "lastName":"Solutions")
 
-    dataService.save(person)
+      dataService.save(person)
 
-    List<Person> persons = dataService.findAll(Person)
+      List<Person> persons = dataService.findAll(Person)
 
-    assertEquals(persons.size(), 1)
-    Person persistedPerson = persons[0]
+      assertEquals(persons.size(), 1)
+      Person persistedPerson = persons[0]
 
-    assertEquals(persistedPerson.firstName, "Rimero")
-    assertEquals(persistedPerson.lastName,"Solutions")
+      assertEquals(persistedPerson.firstName, "Rimero")
+      assertEquals(persistedPerson.lastName,"Solutions")
+    }
   }
 
   @Test
   void testCascadeOperations() {
-    Person person = new Person(firstName: "Arsen", lastName: "Gutsal")
+    dataService.withTransaction {
+      Person person = new Person(firstName: "Arsen", lastName: "Gutsal")
 
-    dataService.save(person);
+      dataService.save(person);
 
-    Document doc = new Document(id:1, author: person)
+      Document doc = new Document(id:1, author: person)
   
-    10.times {
-      doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
-    }
-
-    if(dataService.validate(doc))
-      dataService.save(doc);
-      else {
-        // print validation errors
-        doc.errors.allErrors.each { FieldError error ->
-          LOG.error(msg.getMessage(error, Locale.getDefault()))
-        }
-        
+      10.times {
+        doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
       }
 
-    def documents = dataService.findAll(Document)
-    assert documents.size() == 1: 'Single document should be found'
-    assert documents[0].rows.size() == 10: 'Document should contain exactly 10 rows'
-    assert dataService.findAll(Row).size() == 10: 'Database should contain exactly 10 rows'
+      if(dataService.validate(doc))
+        dataService.save(doc);
+        else {
+          // print validation errors
+          doc.errors.allErrors.each { FieldError error ->
+            LOG.error(msg.getMessage(error, Locale.getDefault()))
+          }
+        
+        }
 
-    dataService.delete(doc)
+      def documents = dataService.findAll(Document)
+      assert documents.size() == 1: 'Single document should be found'
+      assert documents[0].rows.size() == 10: 'Document should contain exactly 10 rows'
+      assert dataService.findAll(Row).size() == 10: 'Database should contain exactly 10 rows'
 
-    assert dataService.findAll(Row).size() == 0: 'Database should contain exactly 0 rows as parent document was deleted'
+      dataService.delete(doc)
+
+      assert dataService.findAll(Row).size() == 0: 'Database should contain exactly 0 rows as parent document was deleted'
+    }
   }
 }

@@ -24,26 +24,30 @@ import org.springframework.transaction.annotation.Transactional
  * @author Yves Zoundi
  */
 @Service("dataService")
-@Transactional
 class DefaultDataService implements DataService {
-  void save(final Object domainObject) {
+  public void save(final Object domainObject) {
     domainObject.save(flush:true)
   }
 
-  void saveOrFail(final Object domainObject) {
+  public void saveOrFail(final Object domainObject) {
     assert domainObject.validate(): domainObject.errors.allErrors
     domainObject.save(flush:true)
   }
 
-  void delete(final Object domainObject) {
+  public void delete(final Object domainObject) {
     domainObject.delete(flush:true)
   }
 
-  boolean validate(final Object domainObject) {
+  public boolean validate(final Object domainObject) {
     domainObject.validate()
   }
 
   public List<Object> findAll(Class<Object> clazz) {
     clazz.findAll()
+  }
+
+  @Transactional
+  public void withTransaction(Closure clos){
+    clos.call()
   }
 }

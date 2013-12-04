@@ -42,25 +42,27 @@ class SpockTests extends Specification  {
   // ************************************* TEST METHODS *************************************
   def "база має бути пуста"(){
   expect:
-  dataService.findAll(Person).size() == 0
-  dataService.findAll(Document).size() == 0
-  dataService.findAll(Row).size() == 0  
+    dataService.findAll(Person).size() == 0
+    dataService.findAll(Document).size() == 0
+    dataService.findAll(Row).size() == 0  
   }
 
   // ************************************* 
 
   def "створюємо документ і строки"(){
   when:
-  Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
-  dataService.saveOrFail(person);
+  dataService.withTransaction {
+    Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
+    dataService.saveOrFail(person);
 
-  Document doc = new Document(id:1, author: person)
+    Document doc = new Document(id:1, author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
     }
   
-  dataService.saveOrFail(doc);
+    dataService.saveOrFail(doc);
+  }
 
   then:
   dataService.findAll(Row).size() == 10  
@@ -72,20 +74,21 @@ class SpockTests extends Specification  {
 
   def "удаляємо документ, строки мають бути видалені також"(){
   when:
-  Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
-  dataService.saveOrFail(person);
+  dataService.withTransaction {
+    Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
+    dataService.saveOrFail(person);
 
-  Document doc = new Document(id:1, author: person)
+    Document doc = new Document(id:1, author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
     }
   
-  dataService.saveOrFail(doc);
+    dataService.saveOrFail(doc);
 
-  // testing cascade removal
-  dataService.delete(doc);
-
+    // testing cascade removal
+    dataService.delete(doc);
+  }
   then: 
   dataService.findAll(Person).size() == 1
   dataService.findAll(Document).size() == 0
@@ -98,24 +101,26 @@ class SpockTests extends Specification  {
   // @FailsWith(org.springframework.dao.DataIntegrityViolationException)
   def "удаляємо персону, документ і строки мають залишитись"(){
   when:
-  Person person = new Person(firstName: "Arsen", lastName: "Gutsal")
-  dataService.saveOrFail(person);
+  dataService.withTransaction {
 
-  Document doc = new Document(id:1, author: person)
+    Person person = new Person(firstName: "Arsen", lastName: "Gutsal")
+    dataService.saveOrFail(person);
+
+    Document doc = new Document(id:1, author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
     }
   
-  dataService.saveOrFail(doc);
+    dataService.saveOrFail(doc);
 
-  // setting author to null
-  doc.author = null;
-  dataService.saveOrFail(doc)
+    // setting author to null
+    doc.author = null;
+    dataService.saveOrFail(doc)
 
-  // testing cascade removal
-  dataService.delete(person);
-
+    // testing cascade removal
+    dataService.delete(person);
+  }
   then: 
   dataService.findAll(Person).size() == 0
   dataService.findAll(Document).size() == 1

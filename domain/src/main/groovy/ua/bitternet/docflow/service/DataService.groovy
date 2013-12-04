@@ -51,5 +51,11 @@ interface DataService {
    * Returns all domain objects
    * @return All domain objects in the database
    */
-  public List<Object> findAll(Class<Object> clazz)
+  List<Object> findAll(Class<Object> clazz)
+
+  /**
+   * Execute closure in @Transactional context
+   * @param clos - closure to be executedo
+   */
+  void withTransaction(Closure clos)
 }

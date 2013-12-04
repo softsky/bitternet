@@ -36,4 +36,11 @@ class Document {
     rows fetch:'join'
   }
 
+  public static Document новий(Class clazz, args){
+    if(args)
+      return clazz.newInstance(args);
+      else
+      return clazz.newInstance();
+  }
+
 }

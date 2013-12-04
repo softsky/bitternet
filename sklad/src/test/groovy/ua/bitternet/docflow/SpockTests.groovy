@@ -1,6 +1,7 @@
 package ua.bitternet.docflow
 
 import ua.bitternet.docflow.domain.*
+import ua.bitternet.docflow.domain.Document as Документ
 
 import ua.bitternet.docflow.service.DataService as БазаДаних
 import ua.bitternet.docflow.utils.GormInterceptorsHelper
@@ -13,6 +14,8 @@ import grails.spring.BeanBuilder
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.assertEquals
+
+import org.springframework.transaction.annotation.Transactional
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -48,10 +51,14 @@ class SpockTests extends Specification  {
   // ************************************* 
   def "створюємо акта"(){
   when:
-  Акт акт = Акт.новий(типАкту: "прихідний")
+  базаДаних.withTransaction {
+    def p = new Person(firstName: "archer", lastName: "gutsal")
+    базаДаних.saveOrFail(p)
 
-  базаДаних.saveOrFail(акт)
-  
+    Акт акт = Акт.новий(типАкту: "прихідний", author: p)
+
+    базаДаних.saveOrFail(акт)
+  }
   then:
   базаДаних.findAll(Акт).size() == 1
   }
@@ -59,38 +66,55 @@ class SpockTests extends Specification  {
   // ************************************* 
   def "створюємо накладну на переміщення між рахунками"(){
   when:
+  базаДаних.withTransaction {
 
-  def p = new Person(firstName: "archer", lastName: "gutsal")
-  базаДаних.saveOrFail(p)
+    def p = new Person(firstName: "archer", lastName: "gutsal")
+    базаДаних.saveOrFail(p)
 
-  p.firstName = 'Ludovic'
-  базаДаних.saveOrFail(p)
+    p.firstName = 'Ludovic'
+    базаДаних.saveOrFail(p)
 
-  assert p.firstName == 'Rimero1'  
+    assert p.firstName == 'Rimero1'  
 
-  Рахунок дебет = Рахунок.новий(50)
-  дебет.сума = 100.0f
+    Рахунок дебет = Рахунок.новий(50)
+    дебет.сума = 100.0f
 
-  Рахунок кредит = Рахунок.новий(51)
-  кредит.сума = 50.0f
+    Рахунок кредит = Рахунок.новий(51)
+    кредит.сума = 50.0f
 
-  базаДаних.saveOrFail(дебет)
-  базаДаних.saveOrFail(кредит)
+    базаДаних.saveOrFail(дебет)
+    базаДаних.saveOrFail(кредит)
   
-  Накладна накладна = Накладна.новий(рахунокДебет: дебет, рахунокКредит: кредит, сума: 10.0f)
+    Накладна накладна = Документ.новий(Накладна, [рахунокДебет: дебет, рахунокКредит: кредит, сума: 10.0f])
 
-  базаДаних.saveOrFail(накладна)
+    базаДаних.saveOrFail(накладна)
 
-  println дебет.сума
-  println кредит.сума
+    // ********************************** Прихід, Розхід
 
-  println накладна.сума
+    //дебет = базаДаних.findAll(Рахунок)[1]
+    //кредит = базаДаних.findAll(Рахунок)[0]
+
+
+    ПрихіднаНакладна прихіднаНакладна = Документ.новий(ПрихіднаНакладна, [рахунокКредит: кредит])
+    прихіднаНакладна.сума = 20.0f
+
+    дебет.save()
+    кредит.save()
+    прихіднаНакладна.save()
+
+    РозхіднаНакладна розхіднаНакладна = Документ.новий(РозхіднаНакладна, [рахунокДебет: дебет])
+    розхіднаНакладна.сума = 30.0f
+
+    дебет.save()
+    кредит.save()
+    розхіднаНакладна.save()
+  }
 
   then:
   базаДаних.findAll(Рахунок)[0].номер == 50
   базаДаних.findAll(Рахунок)[1].номер == 51
 
-  базаДаних.findAll(Рахунок)[0].сума == 90
-  базаДаних.findAll(Рахунок)[1].сума == 60
+  базаДаних.findAll(Рахунок)[0].сума == 100.0f - 10.0f + 20.1f
+  базаДаних.findAll(Рахунок)[1].сума == 50.0f + 10.0f - 30.0f
   }
 }

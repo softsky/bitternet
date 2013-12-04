@@ -1,6 +1,7 @@
 package ua.bitternet.docflow.domain
 
 import ua.bitternet.docflow.domain.Document as Документ
+
 import grails.persistence.Entity;
 import groovy.transform.EqualsAndHashCode
 
@@ -27,9 +28,4 @@ class Накладна extends Документ {
     рахунокДебет.сума -= сума
     рахунокКредит.сума += сума
   }
-
-  public static Накладна новий(args){
-    return new Накладна(args)
-  }
-
 }

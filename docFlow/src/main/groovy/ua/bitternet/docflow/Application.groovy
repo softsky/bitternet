@@ -84,16 +84,33 @@ class Application {
 
     LOG.info ("\n\n2. All Persons:  ${dataService.findAll(Person)}")
 
-    Акт акт = new Акт(author: persons[0], type: 'акт', типАкту: 'прихіжний')
-    if(dataService.validate(акт))
-      dataService.save(акт); 
-      else {
-        // print validation errors
-        акт.errors.allErrors.each { FieldError error ->
-          LOG.error(msg.getMessage(error, Locale.getDefault()))
-        }        
-      }
-    
+    Акт акт = new Акт(author: persons[0], типАкту: 'прихідний')
+
+    dataService.saveOrFail(акт);     
+
+    p = new Person(firstName: "archer", lastName: "gutsal")
+    dataService.saveOrFail(p)
+
+    p.firstName = 'Ludovic'
+    dataService.saveOrFail(p)
+
+    Рахунок дебет = Рахунок.новий(50)
+    дебет.сума = 100.0f
+
+    Рахунок кредит = Рахунок.новий(51)
+    кредит.сума = 50.0f
+
+    dataService.saveOrFail(дебет)
+    dataService.saveOrFail(кредит)
+  
+    Накладна накладна = Накладна.новий(рахунокДебет: дебет, рахунокКредит: кредит, сума: 10.0f)
+
+    10.times {
+      накладна.rows << new Row(name: "name${it}", date: new Date())
+    }
+
+    dataService.saveOrFail(накладна)
+
 
   }
 

@@ -13,6 +13,7 @@ class Row {
 
   String name
   Date date
+
   boolean isNew() { id == null }
 
   static transients = ['new']

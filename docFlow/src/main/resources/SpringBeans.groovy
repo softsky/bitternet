@@ -36,5 +36,13 @@ beans {
     password = "ArcherIam"
   }   
 
+  gorm.sessionFactory("data-source-ref": "dataSource",
+                      "base-package": "ua.bitternet.docflow.domain",
+                      "message-source-ref": "messageSource") {
+    hibernateProperties = ["hibernate.hbm2ddl.auto": "create-drop",
+                           "hibernate.dialect": "org.hibernate.dialect.PostgreSQLDialect"]
+  }
+
+
   context."component-scan"("base-package": "ua.bitternet.docflow")
 }
