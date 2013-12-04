@@ -78,7 +78,7 @@ class SpockTests extends Specification  {
     Person person = new Person(firstName: "Arsen", lastName:"Gutsal")
     dataService.saveOrFail(person);
 
-    Document doc = new Document(id:1, author: person)
+    Document doc = new Document(author: person)
 
     10.times {
       doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
@@ -87,7 +87,7 @@ class SpockTests extends Specification  {
     dataService.saveOrFail(doc);
 
     // testing cascade removal
-    dataService.delete(doc);
+    doc.delete();
   }
   then: 
   dataService.findAll(Person).size() == 1

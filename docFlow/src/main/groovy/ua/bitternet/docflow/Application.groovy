@@ -51,66 +51,68 @@ class Application {
     // Alternative to transactional services would be DomainClass.withTransaction
     DataService dataService = context.getBean("dataService") as DataService
 
-    // Dummy user objects to persist
-    def persons = [
-      new Person(firstName:"Arsen", lastName:"Gutsal"),
-      new Person(firstName:"Rimero", lastName:"Solutions")
-    ]
+    dataService.withTransaction {
 
-    LOG.info("About to load users: ${persons}")
+      // Dummy user objects to persist
+      def persons = [
+        new Person(firstName:"Arsen", lastName:"Gutsal"),
+        new Person(firstName:"Rimero", lastName:"Solutions")
+      ]
 
-    // Save person if validation constraints are met
-    persons.each { person ->
-      if (dataService.validate(person)) {
-        dataService.save(person)
-        LOG.info("Successfully saved ${person}")
-      }
-      else {
-        // print validation errors
-        person.errors.allErrors.each { FieldError error ->
-          LOG.error(msg.getMessage(error, Locale.getDefault()))
+      LOG.info("About to load users: ${persons}")
+
+      // Save person if validation constraints are met
+      persons.each { person ->
+        if (dataService.validate(person)) {
+          dataService.save(person)
+          LOG.info("Successfully saved ${person}")
+        }
+        else {
+          // print validation errors
+          person.errors.allErrors.each { FieldError error ->
+            LOG.error(msg.getMessage(error, Locale.getDefault()))
+          }
         }
       }
-    }
 
-    LOG.info ("\n\n1. All Persons:  ${dataService.findAll(Person)}")
-    Person p = dataService.findAll(Person)[0]
+      LOG.info ("\n\n1. All Persons:  ${dataService.findAll(Person)}")
+      Person p = dataService.findAll(Person)[0]
 
-    LOG.info "\n\nWe try to update the firstName to Ludovic but it should reset to Rimero1"
-    // Will be set to reset to Rimero1 by beforeUpdate closure in domain
-    // because we check if it is set to Ludovic
-    p.firstName = "Ludovic" 
-    dataService.save(p)
+      LOG.info "\n\nWe try to update the firstName to Ludovic but it should reset to Rimero1"
+      // Will be set to reset to Rimero1 by beforeUpdate closure in domain
+      // because we check if it is set to Ludovic
+      p.firstName = "Ludovic" 
+      dataService.save(p)
 
-    LOG.info ("\n\n2. All Persons:  ${dataService.findAll(Person)}")
+      LOG.info ("\n\n2. All Persons:  ${dataService.findAll(Person)}")
 
-    Акт акт = new Акт(author: persons[0], типАкту: 'прихідний')
+      Акт акт = new Акт(author: persons[0], типАкту: 'прихідний')
 
-    dataService.saveOrFail(акт);     
+      dataService.saveOrFail(акт);     
 
-    p = new Person(firstName: "archer", lastName: "gutsal")
-    dataService.saveOrFail(p)
+      p = new Person(firstName: "archer", lastName: "gutsal")
+      dataService.saveOrFail(p)
 
-    p.firstName = 'Ludovic'
-    dataService.saveOrFail(p)
+      p.firstName = 'Ludovic'
+      dataService.saveOrFail(p)
 
-    Рахунок дебет = Рахунок.новий(50)
-    дебет.сума = 100.0f
+      Рахунок дебет = Рахунок.новий(50)
+      дебет.сума = 100.0f
 
-    Рахунок кредит = Рахунок.новий(51)
-    кредит.сума = 50.0f
+      Рахунок кредит = Рахунок.новий(51)
+      кредит.сума = 50.0f
 
-    dataService.saveOrFail(дебет)
-    dataService.saveOrFail(кредит)
+      dataService.saveOrFail(дебет)
+      dataService.saveOrFail(кредит)
   
-    Накладна накладна = Накладна.новий(рахунокДебет: дебет, рахунокКредит: кредит, сума: 10.0f)
+      Накладна накладна = Document.новий(Накладна, [рахунокДебет: дебет, рахунокКредит: кредит, сума: 10.0f])
 
-    10.times {
-      накладна.rows << new Row(name: "name${it}", date: new Date())
+      10.times {
+        накладна.rows << new Row(name: "name${it}", date: new Date())
+      }
+
+      dataService.saveOrFail(накладна)
     }
-
-    dataService.saveOrFail(накладна)
-
 
   }
 
