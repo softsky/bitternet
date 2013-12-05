@@ -5,7 +5,7 @@ apply plugin: 'maven'
 
 group = 'ua.bitternet.docflow'
 
-def slf4jVersion              = "1.6.4"
+def slf4jVersion              = "1.7.5"
 def groovyVersion             = "2.0.8"
 def springFrameworkUaaVersion = "1.0.3.RELEASE"
 def grailsVersion             = "2.2.4"
