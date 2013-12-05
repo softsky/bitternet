@@ -1,7 +1,7 @@
 language: groovy
 
 install:
-  - TERM=dumb gradle assemble
+  - TERM=dumb gradle assemble --stacktrace --debug --info
 
 script:
-  - TERM=dumb gradle check
+  - TERM=dumb gradle check --stacktrace --debug --info
