@@ -12,7 +12,7 @@ import grails.persistence.Entity;
 class Row {
 
   String name
-  Date date
+  double amount
 
   boolean isNew() { id == null }
 

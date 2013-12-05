@@ -16,16 +16,13 @@ class Накладна extends Документ {
   Рахунок рахунокДебет
   Рахунок рахунокКредит
 
-  double сума
-
   static constraints = {
     рахунокДебет nullable: false
     рахунокКредит nullable: false
-    сума nullable: false, empty: false
   }
 
   def beforeUpdate = {
-    рахунокДебет.сума -= сума
-    рахунокКредит.сума += сума
+    рахунокДебет.сума -= sum
+    рахунокКредит.сума += sum
   }
 }

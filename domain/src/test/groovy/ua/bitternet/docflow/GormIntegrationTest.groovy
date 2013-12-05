@@ -89,7 +89,7 @@ class GormIntegrationTest {
       Document doc = new Document(id:1, author: person)
   
       10.times {
-        doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
+        doc.rows << new Row(name: "name${it}", amount: it, owner: doc);
       }
 
       if(dataService.validate(doc))
@@ -105,6 +105,7 @@ class GormIntegrationTest {
       def documents = dataService.findAll(Document)
       assert documents.size() == 1: 'Single document should be found'
       assert documents[0].rows.size() == 10: 'Document should contain exactly 10 rows'
+      assert documents[0].sum == 45: 'Document\'s sum should be exactly 45'
       assert dataService.findAll(Row).size() == 10: 'Database should contain exactly 10 rows'
 
       dataService.delete(doc)

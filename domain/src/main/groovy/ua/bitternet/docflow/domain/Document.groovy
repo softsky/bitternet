@@ -14,6 +14,9 @@ class Document {
   Person author
   List<Row> rows = []
 
+  private double sum
+  
+
   // Test autotimestamp...
   Date dateCreated
   Date lastUpdated
@@ -30,6 +33,15 @@ class Document {
     // REQUIRED to pass validation
     dateCreated nullable:true
     lastUpdated nullable:true
+  }
+
+  public double getSum(){
+    // finding the sum of all rows
+    if(rows.size()){
+      return rows.sum { it.amount }
+    }
+
+    return 0.0f;
   }
 
   static mapping = {

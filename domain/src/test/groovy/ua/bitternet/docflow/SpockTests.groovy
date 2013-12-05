@@ -58,7 +58,7 @@ class SpockTests extends Specification  {
     Document doc = new Document(id:1, author: person)
 
     10.times {
-      doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
+      doc.rows << new Row(name: "name${it}",  amount: it, owner: doc);
     }
   
     dataService.saveOrFail(doc);
@@ -67,6 +67,7 @@ class SpockTests extends Specification  {
   then:
   dataService.findAll(Row).size() == 10  
   dataService.findAll(Document).size() == 1
+  dataService.findAll(Document)[0].sum == 45 //(0+1+2+3+4+5+6+7+8+9)
   dataService.findAll(Person).size() == 1
   }
 
@@ -81,10 +82,13 @@ class SpockTests extends Specification  {
     Document doc = new Document(author: person)
 
     10.times {
-      doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
+      doc.rows << new Row(name: "name${it}", amount: it,  owner: doc);
     }
   
     dataService.saveOrFail(doc);
+
+    assert dataService.findAll(Document)[0].sum == 45 //(0+1+2+3+4+5+6+7+8+9)
+
 
     // testing cascade removal
     doc.delete();
@@ -109,7 +113,7 @@ class SpockTests extends Specification  {
     Document doc = new Document(id:1, author: person)
 
     10.times {
-      doc.rows << new Row(name: "name${it}", date: new Date(), owner: doc);
+      doc.rows << new Row(name: "name${it}", amount: it, owner: doc);
     }
   
     dataService.saveOrFail(doc);
@@ -124,6 +128,7 @@ class SpockTests extends Specification  {
   then: 
   dataService.findAll(Person).size() == 0
   dataService.findAll(Document).size() == 1
+  dataService.findAll(Document)[0].sum == 45 //(0+1+2+3+4+5+6+7+8+9)
   dataService.findAll(Row).size() == 10
   }
 
